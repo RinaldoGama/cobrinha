@@ -1,0 +1,30 @@
+name: Generate Snake Game
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Executa uma vez por dia
+  push:
+    branches:
+      - master  # Executa em pushs para a branch master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate Snake Game
+        uses: Platane/snk@v2
+        with:
+          github_user_name: rinaldogama  # Substitua SEU_USUARIO pelo seu nome de usuário do GitHub
+          outputs: dist/snake.svg
+      - name: Add generated snake to the repository
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'generated snake'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
